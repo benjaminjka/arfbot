@@ -1,0 +1,14 @@
+{
+  "name": "arf_console-app",
+  "version": "0.0.0",
+  "description": "arf_consoleApp",
+  "main": "app.js",
+  "author": {
+    "name": "benjamin.korallus"
+  },
+  "dependencies": {
+    "botkit": "^0.4.6",
+    "os": "^0.1.1",
+    "pg": "^6.1.2"
+  }
+}
