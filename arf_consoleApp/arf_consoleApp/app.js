@@ -8,9 +8,9 @@ var pg = require('pg');
 // will be read if the config is not present
 var config = {
     user: 'postgres', //env var: PGUSER
-    database: 'AptitivePG', //env var: PGDATABASE
-    password: 'aptitive', //env var: PGPASSWORD
-    host: '192.168.2.169', // Server hosting the postgres database
+    database: 'DATABASE NAME HERE', //env var: PGDATABASE
+    password: 'PASSWORD', //env var: PGPASSWORD
+    host: 'HOST IP', // Server hosting the postgres database
     port: 5432, //env var: PGPORT
     max: 10, // max number of clients in the pool
     idleTimeoutMillis: 30000,  // how long a client is allowed to remain idle before being closed
@@ -27,104 +27,9 @@ var controller = Botkit.slackbot({
 
 // connect the bot to a stream of messages
 controller.spawn({
-    token: 'APP TOKEN HERE',
+    token: 'YOUR TOKEN',
 }).startRTM()
 
-
-controller.hears(['hello', 'hi', 'start', 'wakeup'], 'direct_message, direct_mention, mention',
-    function (bot, message) {
-
-        bot.startConversation(message, function (err, convo) {
-
-            convo.ask('Are you ready to give some feedback?', [
-                {
-                    pattern: bot.utterances.no,
-                    callback: function (response, convo) {
-                        convo.say('Perhaps later.');
-                        convo.next();
-                    }
-                },
-                {
-                    default: true,
-                    callback: function (response, convo) {
-                        // just repeat the question
-                        convo.repeat();
-                        convo.next();
-                    }
-                },
-                {
-                    pattern: bot.utterances.yes,
-                    callback: function (response, convo) {
-                        convo.say('Great! Let\'s do this. You can tell me you are \'Done\' at anytime.');
-
-                        convo.ask('Choose one of the following feedback types: >, <, ++, +, -, --', [
-                            {
-                                default: true,
-                                callback: function (response, convo) {
-                                    // just repeat the question
-                                    convo.repeat();
-                                    convo.next();
-                                }
-                            },
-                            {
-                                pattern: ['done', 'Done'],
-                                callback: function (response, convo) {
-                                    convo.exit();
-                                }
-                            },
-                            {
-                                pattern: '>',
-                                callback: function (response, convo) {
-                                    submitFeedback('>', response.user, response.text);
-                                    convo.next();
-                                }
-                            },
-                        ]);
-                        convo.next();
-                    }
-                }
-            ]);
-        });
-
-        //bot.api.reactions.add({
-        //    timestamp: message.ts,
-        //    channel: message.channel,
-        //    name: 'robot_face',
-        //}, function (err, res) {
-        //    if (err) {
-        //        bot.botkit.log('Failed to add emoji reaction :(', err);
-        //    }
-        //        });
-
-
-        bot.reply(message, 'Noted');
-
-    });
-
-
-
-controller.hears('yo', ['direct_mention', 'mention', 'direct_message'], function (bot, message) {
-
-    // start a conversation to handle this response.
-    bot.startConversation(message, function (err, convo) {
-
-        convo.ask('What\'s up dog? You ready to give some feedback?', function (response, convo) {
-
-            convo.say('Cool, you said: ' + response.text);
-            convo.next();
-        });
-
-        bot.say(
-            {
-                text: 'Party people - someone is using your bot in another channel...',
-                channel: 'G272A357T', // a valid slack channel, group, mpim, or im ID
-            }
-        );
-
-    })
-
-
-});
 
 
 controller.hears(['uptime', 'identify yourself', 'who are you', 'what is your name'],
